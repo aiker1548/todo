@@ -19,11 +19,40 @@
             font-size: 2em;
             color: #333;
         }
+
+        .auth-info {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: green;
+        }
+
+        .auth-buttons {
+            margin-top: 20px;
+        }
+
+        .auth-buttons button {
+            margin: 5px;
+        }
     </style>
 </head>
 <body>
     <div class="center-text">
         <p>Hello, World!</p>
+        {% if user.is_authenticated %}
+            <p class="auth-info">Вы авторизованы</p>
+            <div class="auth-buttons">
+                <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Выйти</button>
+                </form>
+            </div>
+        {% else %}
+            <p class="auth-info">Вы не авторизованы</p>
+            <div class="auth-buttons">
+                <a href="{% url 'login' %}"><button>Войти</button></a>
+                <a href="{% url 'register' %}"><button>Регистрация</button></a>
+            </div>
+        {% endif %}
     </div>
 </body>
 </html>
