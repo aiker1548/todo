@@ -4,7 +4,7 @@ from .models import Task, State
 from django.views import generic
 from .forms import RegistrationForm
 from django.contrib.auth.models import User
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
 
 def home_view(request):
@@ -32,3 +32,8 @@ class LoginView(generic.FormView):
 
     def get_success_url(self):
         return redirect(self.success_url)
+    
+
+def userLogout(request):
+    logout(request)
+    return redirect('home')
