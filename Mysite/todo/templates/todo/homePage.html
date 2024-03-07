@@ -33,9 +33,27 @@
         .auth-buttons button {
             margin: 5px;
         }
+
+        .menu {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .menu a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
+    <div class="menu">
+        <a href="{% url 'home' %}">Главная</a>
+        <a href="{% url 'users' %}">Пользователи</a>
+        <a href="{% url 'labels' %}">Метки</a>
+        <a href="{% url 'tasks' %}">Задачи</a>
+    </div>
     <div class="center-text">
         <p>Hello, World!</p>
         {% if user.is_authenticated %}
