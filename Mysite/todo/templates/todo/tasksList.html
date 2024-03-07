@@ -1,0 +1,54 @@
+<!-- tasksList.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasks List</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .toolbar {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .task-item {
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="toolbar">
+        <ul>
+            {% for item in menu %}
+                <li><a href="{% url item.url_name %}">{{ item.title }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="container">
+        {% for task in tasks %}
+            <div class="task-item">
+                <span>{{ task.title }}</span>
+                <!-- Дополнительные данные задачи, которые вы хотите отобразить -->
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
