@@ -7,10 +7,11 @@ from django.contrib.auth.models import User
 class State(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     state_name = models.CharField(max_length=255)
-
+    slug = models.SlugField(max_length=255, unique=True, verbose_name='URL', db_index=True)
 
 
 class Task(models.Model):
+    slug = models.SlugField(max_length=255, unique=True, verbose_name='URL', db_index=True)
     title = models.CharField(max_length=255)
     content = models.CharField(max_length=255)
     state = models.ForeignKey('State', on_delete=models.CASCADE)
