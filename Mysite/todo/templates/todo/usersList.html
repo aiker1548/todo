@@ -1,0 +1,57 @@
+<!-- usersList.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users List</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .toolbar {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-item {
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="toolbar">
+        <ul>
+            {% for item in menu %}
+                <li><a href="{% url item.url_name %}">{{ item.title }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="container">
+        {% for user in users %}
+            <div class="user-item">
+                <span>{{ user.username }}</span>
+                <!-- Дополнительные данные пользователя, которые вы хотите отобразить -->
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
