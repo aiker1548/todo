@@ -27,6 +27,6 @@ class Tasks(models.Model):
     state = models.CharField(max_length=20, choices=STATE_CHOICES, default=NOT_STARTED)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     time_create = models.DateTimeField(auto_now_add=True)
-    labels = models.ManyToManyField(Labels)
+    labels = models.ManyToManyField(Labels, blank=True)
 
 

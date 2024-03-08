@@ -12,7 +12,7 @@ urlpatterns = [
     path('tasks/', TasksListView.as_view(),name = 'tasks'),
     #path('tasks/<slug: task_slug>/', TaskDiteilView.as_view(),name = 'task'),
     #path('tasks/<slug: task_slug>/update/', TaskUpdateView.as_view(),name = 'taskUpdate'),
-    #path('tasks/create/', TaskCreateView.as_view(),name = 'tasksCreate'),
+    path('tasks/create/', TaskCreateView.as_view(),name = 'tasksCreate'),
     
     path('labels/', LabelsListView.as_view(),name = 'labels'),
     #path('labels/<slug: label_slug>/update/', LabelUpdateView.as_view(),name = 'labelUpdate'),

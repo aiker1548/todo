@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from .models import Tasks, Labels
 
 
 class RegistrationForm(UserCreationForm):
@@ -20,3 +21,26 @@ class RegistrationForm(UserCreationForm):
             raise forms.ValidationError("Passwords do not match")
 
         return password2
+
+class TaskCreateForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['labels'].empty_label = 'Метки не выбраны'
+    
+    class Meta:
+        model = Tasks
+        fields = ['title', 'content', 'state', 'labels']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-input'}),
+            'content': forms.Textarea(attrs={'cols': 60, 'rows': 10})
+        }
+        labels = {
+            'labels': 'Метки',  # Если вы хотите изменить подпись, можно использовать этот параметр
+        }
+
+    # Поле labels делаем необязательным
+    labels = forms.ModelMultipleChoiceField(
+        queryset=Labels.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False
+    )
