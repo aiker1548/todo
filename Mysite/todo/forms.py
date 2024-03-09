@@ -1,3 +1,4 @@
+from typing import Any
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -27,6 +28,26 @@ class TaskCreateForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['labels'].empty_label = 'Метки не выбраны'
     
+        labels_queryset = Labels.objects.all()
+        if not labels_queryset.exists():
+            self.fields['labels'].disabled = True
+
+    labels = forms.ModelMultipleChoiceField(
+        queryset=Labels.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False
+    )
+
+    def clean_title(self):
+        title = self.cleaned_data.get('title')
+        print('hui',self.instance.user_id)
+        try:
+            existing_task = Tasks.objects.filter(title=title, user=1)
+            return title
+        except:
+            raise forms.ValidationError('Задача с таким названием уже существует.')    
+
+    
     class Meta:
         model = Tasks
         fields = ['title', 'content', 'state', 'labels']
@@ -38,9 +59,3 @@ class TaskCreateForm(forms.ModelForm):
             'labels': 'Метки',  # Если вы хотите изменить подпись, можно использовать этот параметр
         }
 
-    # Поле labels делаем необязательным
-    labels = forms.ModelMultipleChoiceField(
-        queryset=Labels.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
-        required=False
-    )
