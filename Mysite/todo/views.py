@@ -1,3 +1,4 @@
+from django import forms
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
@@ -9,6 +10,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from .utils import *
 from django.contrib.auth.mixins import LoginRequiredMixin
+from transliterate import translit
 
 def home_view(request):
     return render(request, 'todo/homePage.html')
@@ -93,9 +95,12 @@ class TaskCreateView(LoginRequiredMixin, generic.CreateView):
         context['menu'] = user_menu
         return context
 
-    def form_valid(self, form):
+    def form_valid(self, form):  
         task = form.save(commit=False)
         task.user = self.request.user
+        slug = translit(task.title, 'ru', reversed=True)
+        slug = slug.replace(' ', '_')
+        task.slug = slug
         task.save()
         return redirect('home')
         #return redirect('task', task_slug=task.slug)
