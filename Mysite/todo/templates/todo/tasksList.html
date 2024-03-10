@@ -32,6 +32,12 @@
             border-bottom: 1px solid #ccc;
             padding: 10px 0;
         }
+
+        .task-title {
+            font-weight: bold;
+            cursor: pointer;
+            color: #007bff; /* Ссылка с цветом, похожим на стандартные ссылки */
+        }
     </style>
 </head>
 <body>
@@ -45,7 +51,7 @@
     <div class="container">
         {% for task in tasks %}
             <div class="task-item">
-                <span>{{ task.title }}</span>
+                <span class="task-title"><a href="{% url 'showTask' task.slug %}">{{ task.title }}</a></span>
                 <!-- Дополнительные данные задачи, которые вы хотите отобразить -->
             </div>
         {% endfor %}
