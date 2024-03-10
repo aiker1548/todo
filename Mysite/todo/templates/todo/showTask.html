@@ -1,0 +1,82 @@
+<!-- showTask.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ task.title }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        p {
+            color: #555;
+        }
+
+        .due-date {
+            color: #900;
+            font-weight: bold;
+        }
+
+        .status {
+            font-weight: bold;
+        }
+
+        .labels {
+            margin-top: 10px;
+        }
+
+        .label {
+            display: inline-block;
+            padding: 5px 10px;
+            margin: 5px;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>{{ task.title }}</h1>
+    </header>
+
+    <div class="container">
+        <p>{{ task.content }}</p>
+        <p class="due-date">Due Date: {{ task.time_create }}</p>
+        <p class="status">Status: {{ task.get_state_display }}</p>
+
+        <div class="labels">
+            <strong>Labels:</strong>
+            {% for label in task.labels.all %}
+                <span class="label">{{ label.name }}</span>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

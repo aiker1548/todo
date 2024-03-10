@@ -11,6 +11,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from .utils import *
 from django.contrib.auth.mixins import LoginRequiredMixin
 from transliterate import translit
+from django.contrib import messages
 
 def home_view(request):
     return render(request, 'todo/homePage.html')
@@ -84,28 +85,58 @@ class TasksListView(generic.ListView):
         return context
     
 
+
+
 class TaskCreateView(LoginRequiredMixin, generic.CreateView):
     form_class = TaskCreateForm
     template_name = 'todo/add_task.html'
     login_url = reverse_lazy('home')
 
-    def get_context_data(self, **kwargs) -> dict[str, any]:
+    def get_context_data(self, **kwargs):
         user_menu = menu.copy()
         context = super().get_context_data(**kwargs)
         context['menu'] = user_menu
         return context
 
-    def form_valid(self, form):  
-        task = form.save(commit=False)
-        task.user = self.request.user
-        slug = translit(task.title, 'ru', reversed=True)
-        slug = slug.replace(' ', '_')
-        task.slug = slug
-        task.save()
-        return redirect('home')
-        #return redirect('task', task_slug=task.slug)
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
 
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
 
+        if form.is_valid():
+            try:
+                existing_task = Tasks.objects.get(title=form.cleaned_data['slug'], user=request.user)
+                # Задача с похожим названием уже существует
+                form.add_error('title', 'Задача с таким названием уже существует.')
+                return render(request, self.template_name, {'form': form})
+            except Tasks.DoesNotExist:
+                # Задачи с таким названием нет, создаем новую
+                task = form.save(commit=False)
+                task.user = request.user
+                slug = translit(task.title, 'ru', reversed=True)
+                slug = slug.replace(' ', '_') + '_' +task.user.username
+                task.slug = slug
+                task.save()
+                messages.success(request, 'Задача успешно создана.')
+                return redirect('home')
+        else:
+            return render(request, self.template_name, {'form': form})
+        
+
+class ShowTaskView(generic.DetailView):
+    model = Tasks
+    template_name = 'todo/showTask.html'
+    slug_url_kwarg = 'task_slug'
+    context_object_name = 'task'
+
+    def get_context_data(self, **kwargs):
+        user_menu = menu.copy()
+        context = super().get_context_data(**kwargs)
+        context['menu'] = user_menu
+        return context
+    
 # class TaskUpdateView(LoginRequiredMixin, DataMixin, UpdateView):
 #     model = Tasks
 #     form_class = TaskUpdateForm
