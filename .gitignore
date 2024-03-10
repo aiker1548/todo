@@ -1,1 +1,4 @@
 venv/
+text.py
+__pycache__/
+.sqlite3
