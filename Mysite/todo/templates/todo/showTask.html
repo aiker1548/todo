@@ -68,15 +68,18 @@
 
     <div class="container">
         <p>{{ task.content }}</p>
-        <p class="due-date">Due Date: {{ task.time_create }}</p>
+        <p class="due-date">Due Date: {{ task.time_create|date:"F d, Y H:i" }}</p>
         <p class="status">Status: {{ task.get_state_display }}</p>
 
         <div class="labels">
             <strong>Labels:</strong>
             {% for label in task.labels.all %}
-                <span class="label">{{ label.name }}</span>
+                <span class="label">{{ label.label_name }}</span>
             {% endfor %}
         </div>
+
+        <!-- Добавленная кнопка изменения задачи -->
+        <a href="{% url 'taskUpdate' task_slug=task.slug %}">Update Task</a>
     </div>
 </body>
 </html>

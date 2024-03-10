@@ -3,12 +3,13 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 
-
 class Labels(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     label_name = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, unique=True, verbose_name='URL', db_index=True)
 
+    def __str__(self):
+        return self.label_name
 
 class Tasks(models.Model):
     NOT_STARTED = 'Not started'

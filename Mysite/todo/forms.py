@@ -59,3 +59,18 @@ class TaskCreateForm(forms.ModelForm):
             'labels': 'Метки',  # Если вы хотите изменить подпись, можно использовать этот параметр
         }
 
+
+class LabelCreateForm(forms.ModelForm):
+    class Meta:
+        model = Labels
+        fields = ['label_name',]
+
+
+class TaskUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Tasks
+        fields = ['content', 'state', 'labels']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-input'}),
+            'content': forms.Textarea(attrs={'cols': 60, 'rows': 10})
+        }

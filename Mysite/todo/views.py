@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from .models import Tasks, Labels
 from django.views import generic
-from .forms import RegistrationForm, TaskCreateForm
+from .forms import RegistrationForm, TaskCreateForm, LabelCreateForm, TaskUpdateForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
@@ -107,7 +107,7 @@ class TaskCreateView(LoginRequiredMixin, generic.CreateView):
 
         if form.is_valid():
             try:
-                existing_task = Tasks.objects.get(title=form.cleaned_data['slug'], user=request.user)
+                existing_task = Tasks.objects.get(title=form.cleaned_data['title'], user=request.user)
                 # Задача с похожим названием уже существует
                 form.add_error('title', 'Задача с таким названием уже существует.')
                 return render(request, self.template_name, {'form': form})
@@ -125,6 +125,44 @@ class TaskCreateView(LoginRequiredMixin, generic.CreateView):
             return render(request, self.template_name, {'form': form})
         
 
+class LabelCreateView(LoginRequiredMixin, generic.CreateView):
+    form_class = LabelCreateForm
+    template_name = 'todo/add_label.html'
+    login_url = reverse_lazy('home')
+
+    def get_context_data(self, **kwargs):
+        user_menu = menu.copy()
+        context = super().get_context_data(**kwargs)
+        context['menu'] = user_menu
+        return context
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+
+        if form.is_valid():
+            try:
+                existing_label = Labels.objects.get(label_name=form.cleaned_data['label_name'], user=request.user)
+                # Метка с похожим названием уже существует
+                form.add_error('label_name', 'Метка с таким названием уже существует.')
+                return render(request, self.template_name, {'form': form})
+            except Labels.DoesNotExist:
+                # Метка с таким названием нет, создаем новую
+                label = form.save(commit=False)
+                label.user = request.user
+                slug = translit(label.label_name, 'ru', reversed=True)
+                slug = slug.replace(' ', '_') + '_' +label.user.username
+                label.slug = slug
+                label.save()
+                messages.success(request, 'Метка успешно создана.')
+                return redirect('home')
+        else:
+            return render(request, self.template_name, {'form': form})
+   
+
 class ShowTaskView(generic.DetailView):
     model = Tasks
     template_name = 'todo/showTask.html'
@@ -136,6 +174,22 @@ class ShowTaskView(generic.DetailView):
         context = super().get_context_data(**kwargs)
         context['menu'] = user_menu
         return context
+    
+class TaskUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = Tasks
+    form_class = TaskUpdateForm
+    template_name = 'todo/update_task.html'
+    login_url = reverse_lazy('home')
+    slug_url_kwarg = 'task_slug'
+
+    def get_context_data(self, **kwargs):
+        user_menu = menu.copy()  # Если у вас есть меню, добавьте его сюда
+        context = super().get_context_data(**kwargs)
+        context['menu'] = user_menu
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('home')
     
 # class TaskUpdateView(LoginRequiredMixin, DataMixin, UpdateView):
 #     model = Tasks
